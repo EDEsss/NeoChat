@@ -312,7 +312,7 @@
   .item-sub { font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
   .badge { font-size: 11px; padding: 3px 8px; border-radius: 8px; background: var(--accent-grad); color: #fff; font-weight: 700; }
 
-  /* ================= СТИЛИЗОВАННЫЕ ВСПЛЫВАЮЩИЕ МЕНЮ ================= */
+  /* ================= СТИЛИЗОВАННЫЕ МЕНЮ И ПЛАВНЫЙ ЧАТ ================= */
   .styled-menu {
     position: fixed; background: var(--bg-sec); border: 1px solid var(--border);
     border-radius: 16px; padding: 7px; min-width: 235px; z-index: 150;
@@ -332,7 +332,6 @@
   .reaction-bar { display: flex; justify-content: space-around; padding: 6px 4px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
   .reaction-btn { font-size: 20px; padding: 4px 7px; border-radius: 8px; cursor: pointer; background: transparent; box-shadow: none; }
 
-  /* ================= ОКНО ЧАТА И ИДЕАЛЬНО ПЛАВНЫЙ ПОДЪЕМ СООБЩЕНИЙ ================= */
   #chat-window { position: absolute; inset: 0; background: var(--bg-chat); z-index: 50; display: flex; flex-direction: column; }
   .pinned-banner {
     background: var(--bg-sec); border-bottom: 1px solid var(--border);
@@ -388,7 +387,7 @@
   .reactions-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
   .reaction-pill { font-size: 12px; padding: 2px 7px; border-radius: 12px; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.2); cursor: pointer; }
 
-  /* КАСТОМНЫЙ АУДИОПЛЕЕР И ВИДЕО-КРУЖОЧКИ */
+  /* АУДИОПЛЕЕР И ВИДЕО-КРУЖОЧКИ */
   .neo-voice-player {
     display: flex; align-items: center; gap: 10px; margin-top: 4px;
     background: rgba(0, 0, 0, 0.22); border: 1px solid rgba(255, 255, 255, 0.16);
@@ -610,7 +609,7 @@
     <div class="auth-card">
       <div class="brand-logo">N</div>
       <h2 style="text-align:center; font-weight:800;">NeoChat</h2>
-      <p style="font-size:13px; color:var(--text-muted); text-align:center;">Личный мессенджер без ВПН для общения с близкими и друзьями</p>
+      <p style="font-size:13px; color:var(--text-muted); text-align:center;">Личный защищенный мессенджер для близких и друзей</p>
       
       <div class="auth-tabs">
         <button id="tab-btn-reg" onclick="switchAuthMode('reg')">Регистрация</button>
@@ -800,7 +799,7 @@
         <h3 style="color:var(--accent);">Аналитика и Хранилище (5 ТБ)</h3>
         <div style="font-size:13px; line-height:1.7; margin-bottom:14px; background:var(--bg-main); padding:12px; border-radius:12px; border:1px solid var(--border);">
           <div>Зарегистрировано пользователей: <b id="adm-reg-count">0</b></div>
-          <div>Сейчас онлайн (видно только админу): <b id="adm-online-count">0</b> из 150</div>
+          <div>Сейчас онлайн (видно только админу): <b id="adm-online-count">0</b> из 300</div>
           <div>Облако Google Диск (5 ТБ): <b id="adm-storage-info">Проверка...</b></div>
           <button class="btn-sec" style="padding:6px 12px; font-size:12px; margin-top:6px;" onclick="refreshStorageInfo()">Обновить остаток места</button>
         </div>
@@ -1034,19 +1033,39 @@
 
 </div>
 <script>
-  // 1. Прямой адрес базы Firebase и хранилища Google Диск 5 ТБ (РАБОТАЕТ БЕЗ ВПН И БЕЗ GSTATIC.COM)
-  const DB_BASE_URL = "https://neochat-34b88-default-rtdb.europe-west1.firebasedatabase.app";
-  const FOLDER_ID = "1NldLefJEkTb2c6Ht9rljD0EMMTcwG6OR";
-  const DEPLOYMENT_ID = "AKfycbyQM1XP_3Q3zD_2ekdQzHrRngYJ1f_k_730TRs4AIN8FBTfif5lGuxt8EEXdxtiaeJzWQ";
-  const GAS_URL = "https://script.google.com/macros/s/" + DEPLOYMENT_ID + "/exec";
+  // === ЗАЩИТА ОТ ПРОСМОТРА ИСХОДНОГО КОДА (БЛОКИРОВКА F12, CTRL+U, CTRL+SHIFT+I) ===
+  document.addEventListener("keydown", (e) => {
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
+      e.preventDefault();
+      return false;
+    }
+  });
 
+  // === КРИПТО-КОНТЕЙНЕР (В ИСХОДНОМ КОДЕ НА GITHUB НЕТ НИ ОДНОЙ ССЫЛКИ НА БАЗУ ИЛИ ДИСК!) ===
+  const ENCRYPTED_VAULT = "FVg1DRnb4JWnWCYNMtGsx6USMRE/iqzOu0M5QD6E9cv9qU01WGHE/cezDDRZb8f2lO4bJ1Ms3ezSs0dxHSPRrcTDqUlvGXWetpajCWNNZ9yu3/5dLUJh3uq8tEl7DHKA3OXU1BZvIA7FjdGoRTUoM8e4zbV4KTlKoJyXonEjY1bNga7NrRQsYzjLptm6VDUXNM3rmaZLaxoo2LjUpVZ9HDF9nvyNpEUgW3Oa9YuyCywaQff7h74GNXYYh8+i0lQfQRUI9ODb/k9ZHwiJg9KneEhIZreopu0ILn1RmaKymXl2HHMbyuCKohEfET3SvfnRJ3kGK9OkysxAQCV8j77IsBIBKBF7huGNrUQTVWKDuMPkGiB1eN/kktQONBct0v/dz7IALUwplo7YqlIlWD3Vs5uATGlLeITvnYpdLlJ/1f+VjOJaLg==";
   const ADMIN_HASH = "SWhQaWhvQndZNUdXZkloQw==";
-  const GAS_BRIDGE_KEY = "{kW&d|mRl}`yckrJ";
-  const DB_ROOT = "my_private_messenger";
 
-  // ================= АВТОНОМНЫЙ ДВИЖОК БАЗЫ NEO-DB (РАБОТАЕТ БЕЗ ВПН ПО HTTPS) =================
+  function decodeVaultConfig() {
+    const k = String.fromCharCode(110, 101, 111, 50, 48, 50, 54);
+    const raw = atob(ENCRYPTED_VAULT);
+    const out = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) {
+      out[i] = raw.charCodeAt(i) ^ k.charCodeAt(i % k.length) ^ ((i * 31) & 255);
+    }
+    return JSON.parse(new TextDecoder().decode(out));
+  }
+
+  const VAULT = decodeVaultConfig();
+  const DB_BASE_URL = VAULT.dbUrl;
+  const FOLDER_ID = VAULT.folderId;
+  const GAS_URL = VAULT.gasUrl;
+  const GAS_BRIDGE_KEY = VAULT.bridgeKey;
+  const DB_ROOT = VAULT.dbRoot;
+
+  // === АВТОНОМНЫЙ ДВИЖОК NEO-DB С ОПТИМИЗАЦИЕЙ ETAG ПОД 300 ЧЕЛОВЕК ОНЛАЙН БЕЗ ВПН ===
   const NeoDB = (() => {
     let tree = {};
+    let lastETag = "";
     try {
       const cached = localStorage.getItem("neochat_tree_cache");
       if (cached) tree = JSON.parse(cached) || {};
@@ -1088,9 +1107,18 @@
     }
 
     async function syncFromServer() {
+      if (document.hidden) return;
       try {
-        const res = await fetch(DB_BASE_URL + "/" + DB_ROOT + ".json?t=" + Date.now(), { cache: "no-store" });
+        const headers = { "X-Firebase-ETag": "true" };
+        if (lastETag) headers["If-None-Match"] = lastETag;
+        const res = await fetch(DB_BASE_URL + "/" + DB_ROOT + ".json", {
+          headers: headers,
+          cache: "no-store"
+        });
+        if (res.status === 304) return;
         if (res.ok) {
+          const newETag = res.headers.get("ETag");
+          if (newETag) lastETag = newETag;
           const data = await res.json();
           tree[DB_ROOT] = data || {};
           notifyAll();
@@ -1098,7 +1126,8 @@
       } catch (e) {}
     }
 
-    setInterval(syncFromServer, 1500);
+    setInterval(syncFromServer, 2200);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) syncFromServer(); });
     setTimeout(syncFromServer, 40);
 
     function createRef(path) {
@@ -1109,11 +1138,13 @@
           cb({ val: () => (curVal !== null ? JSON.parse(JSON.stringify(curVal)) : null) });
         },
         async once() {
+          lastETag = "";
           await syncFromServer();
           const curVal = getByPath(path);
           return { val: () => (curVal !== null ? JSON.parse(JSON.stringify(curVal)) : null) };
         },
         async set(val) {
+          lastETag = "";
           setByPath(path, val);
           notifyAll();
           try {
@@ -1125,9 +1156,9 @@
           } catch (e) {}
         },
         async update(obj) {
+          lastETag = "";
           const cur = getByPath(path) || {};
-          const merged = { ...cur, ...obj };
-          setByPath(path, merged);
+          setByPath(path, { ...cur, ...obj });
           notifyAll();
           try {
             await fetch(DB_BASE_URL + "/" + path + ".json", {
@@ -1138,6 +1169,7 @@
           } catch (e) {}
         },
         async remove() {
+          lastETag = "";
           setByPath(path, null);
           notifyAll();
           try {
@@ -1221,7 +1253,7 @@
     }, 3200);
   }
 
-  // ================= PWA УСТАНОВКА НА ANDROID И IOS =================
+  // === PWA УСТАНОВКА НА ANDROID И IOS ===
   let deferredInstallPrompt = null;
   function setupPWA() {
     const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><rect width="512" height="512" rx="120" fill="#2563eb"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-weight="900" font-size="290">N</text></svg>`;
@@ -1256,7 +1288,7 @@
     }
   }
 
-  // ================= ТЕМЫ И СВОРАЧИВАНИЕ ТЕМ =================
+  // === ТЕМЫ И РЕДАКТОР АВАТАРКИ ===
   const savedTheme = localStorage.getItem("neochat_theme") || "dark";
   changeTheme(savedTheme, true);
   if (localStorage.getItem("neochat_themes_collapsed") === "1") {
@@ -1281,7 +1313,6 @@
     });
   }
 
-  // ================= РЕДАКТОР АВАТАРКИ =================
   let cropperTarget = "profile";
   let cropperImg = new Image();
   let cropScale = 1, cropOffsetX = 0, cropOffsetY = 0, isDraggingCrop = false, dragStartX = 0, dragStartY = 0;
@@ -1338,7 +1369,7 @@
 
   async function applyCroppedAvatar() {
     triggerSafeHaptic(12);
-    const dataUrl = document.getElementById("cropper-canvas").toDataURL("image/jpeg", 0.86);
+    const dataUrl = document.getElementById("cropper-canvas").toDataURL("image/jpeg", 0.85);
     closeAvatarCropper();
 
     if (cropperTarget === "profile" && currentUser) {
@@ -1360,7 +1391,7 @@
     document.getElementById("avatar-cropper-modal").classList.add("hidden");
   }
 
-  // ================= УВЕДОМЛЕНИЯ =================
+  // === УВЕДОМЛЕНИЯ И ПРОВЕРКА УНИКАЛЬНОСТИ ===
   function checkNotificationPopup() {
     if (!("Notification" in window)) return;
     if (Notification.permission === "default" && !localStorage.getItem("neochat_notif_prompted")) {
@@ -1394,74 +1425,6 @@
     } catch (e) {}
   }
 
-  // ================= СЛУШАТЕЛИ БАЗЫ ДАННЫХ =================
-  function initRealtimeListeners() {
-    db.ref(DB_ROOT + "/users").on("value", (snap) => {
-      allUsers = snap.val() || {};
-      document.getElementById("adm-reg-count").innerText = Object.keys(allUsers).length;
-
-      const savedUid = localStorage.getItem("neochat_uid");
-      if (!currentUser && savedUid && allUsers[savedUid]) {
-        completeLogin(allUsers[savedUid]);
-      } else if (currentUser && allUsers[currentUser.id]) {
-        currentUser = allUsers[currentUser.id];
-      }
-      renderAll();
-      renderAdminUsers();
-    });
-
-    db.ref(DB_ROOT + "/online").on("value", (snap) => {
-      const onlineMap = snap.val() || {};
-      document.getElementById("header-sub").innerText = "Онлайн";
-      document.getElementById("adm-online-count").innerText = Object.keys(onlineMap).length;
-    });
-
-    db.ref(DB_ROOT + "/blocks").on("value", (snap) => {
-      allBlocks = snap.val() || {};
-      renderAll();
-    });
-
-    db.ref(DB_ROOT + "/chats").on("value", (snap) => {
-      allChats = snap.val() || {};
-
-      if (currentUser) {
-        Object.values(allChats).forEach(ch => {
-          if (!ch.members || !ch.members[currentUser.id] || myBlocked[ch.id]) return;
-          Object.values(ch.messages || {}).forEach(m => {
-            if (m.ts > appStartTime && m.senderId !== currentUser.id && m.senderId !== "system" && !notifiedMsgIds[m.id]) {
-              notifiedMsgIds[m.id] = true;
-              sendBrowserNotification(getChatDisplayTitle(ch), (m.senderName || "Сообщение") + ": " + (m.text || "Медиа"), ch.id);
-            }
-          });
-        });
-      }
-
-      renderAll();
-      if (activeChatId && allChats[activeChatId]) {
-        renderActiveChat();
-        if (!document.getElementById("profile-drawer").classList.contains("hidden")) {
-          renderDrawerMediaContent();
-          renderGroupMembersInDrawer(allChats[activeChatId]);
-        }
-      } else if (activeChatId && !allChats[activeChatId]) {
-        closeChat();
-      }
-    });
-
-    db.ref(DB_ROOT + "/adminConfig").on("value", (snap) => {
-      const cfg = snap.val() || {};
-      const days = Number(cfg.autoPurgeDays || 0);
-      document.getElementById("auto-purge-select").value = String(days);
-      if (days > 0) {
-        const lastPurge = Number(cfg.lastPurgeTs || 0);
-        if (lastPurge > 0 && (Date.now() - lastPurge >= days * 86400000)) {
-          runScheduledAutoPurge(days);
-        }
-      }
-    });
-  }
-  initRealtimeListeners();
-
   function closeAllPopups() {
     document.getElementById("custom-popup-menu").classList.add("hidden");
     document.getElementById("attach-menu").classList.add("hidden");
@@ -1482,7 +1445,6 @@
     }
   }
 
-  // ================= СТРОГАЯ ПРОВЕРКА УНИКАЛЬНОСТИ НИКА, ТЕЛЕФОНА И ПОЧТЫ =================
   function normalizePhone(p) {
     return (p || "").replace(/[^\d+]/g, "");
   }
@@ -1611,8 +1573,9 @@
     currentUser = null;
     document.getElementById("auth-screen").classList.remove("hidden");
   }
-
-  // ================= СИСТЕМА ДРУЗЕЙ, ЗАЯВОК И ЧС =================
+</script>
+<script>
+  // === СИСТЕМА ДРУЗЕЙ, ЗАЯВОК И ДВУСТОРОННЕГО ЧЕРНОГО СПИСКА ===
   function isBlockedBetween(uidA, uidB) {
     const aBlockedB = !!(allBlocks[uidA] && allBlocks[uidA][uidB]);
     const bBlockedA = !!(allBlocks[uidB] && allBlocks[uidB][uidA]);
@@ -1724,7 +1687,7 @@
     openChat(chatId);
   }
 
-  // ================= ГРУППЫ, УЧАСТНИКИ И УДАЛЕНИЕ УЧАСТНИКОВ СОЗДАТЕЛЕМ =================
+  // === ГРУППЫ, УЧАСТНИКИ И УДАЛЕНИЕ УЧАСТНИКОВ СОЗДАТЕЛЕМ ===
   let selectedNewGroupMembers = {};
   let selectedAddModalMembers = {};
 
@@ -1884,7 +1847,8 @@
     });
     showToast("Участник удален из группы");
   }
-  // ================= МЕНЮ ЧАТА НА ТРИ ТОЧКИ (⋮) И ОЧИСТКА / УДАЛЕНИЕ ПЕРЕПИСКИ =================
+
+  // === МЕНЮ ЧАТА НА ТРИ ТОЧКИ (⋮) И ОЧИСТКА / УДАЛЕНИЕ ПЕРЕПИСКИ ===
   function getOtherUserIdInDM(chat) {
     if (!chat || chat.isGroup) return null;
     return Object.keys(chat.members || {}).find(id => id !== (currentUser && currentUser.id)) || null;
@@ -1986,8 +1950,9 @@
     }
     showToast("Убран из черного списка");
   }
-
-  // ================= ПРОФИЛЬ СОБЕСЕДНИКА / ГРУППЫ И ГАЛЕРЕЯ ВЛОЖЕНИЙ =================
+</script>
+<script>
+  // === ПРОФИЛЬ СОБЕСЕДНИКА / ГРУППЫ И ГАЛЕРЕЯ ВЛОЖЕНИЙ ===
   function openChatProfileDrawer() {
     const chat = allChats[activeChatId];
     if (!chat) return;
@@ -2093,7 +2058,7 @@
     }
   }
 
-  // ================= ФУНКЦИИ АКТИВНОГО ЧАТА И СТИЛИЗОВАННОЕ ОКНО «ПЕРЕСЛАТЬ» =================
+  // === АКТИВНЫЙ ЧАТ, СВАЙПЫ И ОКНО «ПЕРЕСЛАТЬ СООБЩЕНИЕ» С ПОИСКОМ ===
   function getChatDisplayTitle(chat) {
     if (chat.isGroup) return chat.title || "Группа";
     const otherId = getOtherUserIdInDM(chat) || (currentUser && currentUser.id);
@@ -2483,8 +2448,9 @@
     await db.ref(DB_ROOT + "/chats/" + activeChatId + "/messages/" + msgId).remove();
     showToast("Сообщение удалено");
   }
-
-  // ================= АУДИОПЛЕЕР И КРУЖОЧКИ =================
+</script>
+<script>
+  // === АУДИОПЛЕЕР, ГОЛОСОВЫЕ И ВИДЕО-КРУЖОЧКИ (БЕЗ ОДНОВРЕМЕННОГО ПРОСЛУШИВАНИЯ) ===
   function stopAllPlayingMedia() {
     if (!globalAudio.paused) {
       globalAudio.pause();
@@ -2585,7 +2551,7 @@
     return m + ":" + (sec < 10 ? "0" : "") + sec;
   }
 
-  // ================= ЗАПИСЬ ГОЛОСОВЫХ И ВИДЕО-КРУЖОЧКОВ =================
+  // === СТУДИЯ ЗАПИСИ ГОЛОСОВЫХ И КРУЖОЧКОВ С ПАУЗОЙ, ПРОДОЛЖЕНИЕМ И УДАЛЕНИЕМ ===
   async function startVoiceRecordingStudio() {
     if (!canSendToCurrentChat()) return;
     try {
@@ -2781,7 +2747,7 @@
     } catch (e) {}
   }
 
-  // ================= ЗАГРУЗКА ФАЙЛОВ И ОКНО «ПОДЕЛИТЬСЯ КОНТАКТОМ» =================
+  // === ЗАГРУЗКА ФАЙЛОВ, ФОТО И ВИДЕО СО ШКАЛОЙ ПРОГРЕССА ===
   function toggleAttachMenu(e) {
     if (e) e.stopPropagation();
     document.getElementById("attach-menu").classList.toggle("hidden");
@@ -2939,7 +2905,9 @@
       r.readAsDataURL(blob);
     });
   }
-
+</script>
+<script>
+  // === ОТЛОЖЕННЫЕ СООБЩЕНИЯ, ОТПРАВКА КОНТАКТА И НАСТРОЙКИ ПРОФИЛЯ ===
   function sendDelayedMessagePrompt() {
     closeAllPopups();
     if (!canSendToCurrentChat()) return;
@@ -3012,7 +2980,6 @@
     });
   }
 
-  // ================= НАСТРОЙКИ ГРУППЫ И ПРОФИЛЯ =================
   async function saveGroupSettings() {
     if (!activeChatId) return;
     await db.ref(DB_ROOT + "/chats/" + activeChatId).update({
@@ -3070,7 +3037,7 @@
     showToast("Изменения профиля сохранены!");
   }
 
-  // ================= АДМИНКА И БЭКАПЫ =================
+  // === АДМИН-ПАНЕЛЬ, ОЧИСТКА ХРАНИЛИЩА 5 ТБ И БЭКАПЫ ===
   async function refreshStorageInfo() {
     const el = document.getElementById("adm-storage-info");
     el.innerText = "Обновление данных с Google Диска 5 ТБ...";
@@ -3233,7 +3200,7 @@
     }
   }
 
-  // ================= ПЛАВНАЯ ОТРИСОВКА СООБЩЕНИЙ БЕЗ ДЕРГАНИЯ =================
+  // === ПЛАВНАЯ ОТРИСОВКА СООБЩЕНИЙ И СЛУШАТЕЛИ БАЗЫ ===
   function switchTab(tab) {
     triggerSafeHaptic(8);
     ["contacts", "messages", "settings"].forEach(t => {
@@ -3612,6 +3579,74 @@
       });
     }
   }
+
+  function initRealtimeListeners() {
+    db.ref(DB_ROOT + "/users").on("value", (snap) => {
+      allUsers = snap.val() || {};
+      document.getElementById("adm-reg-count").innerText = Object.keys(allUsers).length;
+
+      const savedUid = localStorage.getItem("neochat_uid");
+      if (!currentUser && savedUid && allUsers[savedUid]) {
+        completeLogin(allUsers[savedUid]);
+      } else if (currentUser && allUsers[currentUser.id]) {
+        currentUser = allUsers[currentUser.id];
+      }
+      renderAll();
+      renderAdminUsers();
+    });
+
+    db.ref(DB_ROOT + "/online").on("value", (snap) => {
+      const onlineMap = snap.val() || {};
+      document.getElementById("header-sub").innerText = "Онлайн";
+      document.getElementById("adm-online-count").innerText = Object.keys(onlineMap).length;
+    });
+
+    db.ref(DB_ROOT + "/blocks").on("value", (snap) => {
+      allBlocks = snap.val() || {};
+      renderAll();
+    });
+
+    db.ref(DB_ROOT + "/chats").on("value", (snap) => {
+      allChats = snap.val() || {};
+
+      if (currentUser) {
+        Object.values(allChats).forEach(ch => {
+          if (!ch.members || !ch.members[currentUser.id] || myBlocked[ch.id]) return;
+          Object.values(ch.messages || {}).forEach(m => {
+            if (m.ts > appStartTime && m.senderId !== currentUser.id && m.senderId !== "system" && !notifiedMsgIds[m.id]) {
+              notifiedMsgIds[m.id] = true;
+              sendBrowserNotification(getChatDisplayTitle(ch), (m.senderName || "Сообщение") + ": " + (m.text || "Медиа"), ch.id);
+            }
+          });
+        });
+      }
+
+      renderAll();
+      if (activeChatId && allChats[activeChatId]) {
+        renderActiveChat();
+        if (!document.getElementById("profile-drawer").classList.contains("hidden")) {
+          renderDrawerMediaContent();
+          renderGroupMembersInDrawer(allChats[activeChatId]);
+        }
+      } else if (activeChatId && !allChats[activeChatId]) {
+        closeChat();
+      }
+    });
+
+    db.ref(DB_ROOT + "/adminConfig").on("value", (snap) => {
+      const cfg = snap.val() || {};
+      const days = Number(cfg.autoPurgeDays || 0);
+      document.getElementById("auto-purge-select").value = String(days);
+      if (days > 0) {
+        const lastPurge = Number(cfg.lastPurgeTs || 0);
+        if (lastPurge > 0 && (Date.now() - lastPurge >= days * 86400000)) {
+          runScheduledAutoPurge(days);
+        }
+      }
+    });
+  }
+
+  initRealtimeListeners();
 </script>
 </body>
 </html>
